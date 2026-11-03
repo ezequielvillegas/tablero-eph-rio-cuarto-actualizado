@@ -1,0 +1,84 @@
+/* ==========================================================================
+   tablero.css — Estilos propios del tablero EPH Río Cuarto.
+   Solo espaciados y listas: los colores salen de tokens.css.
+   ========================================================================== */
+
+.titulo-seccion {
+  margin: 8px 0 12px;
+}
+
+/* Seis KPIs: en pantallas anchas, dos filas de tres (en vez de 5 + 1). */
+@media (min-width: 760px) {
+  #indicadores {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Cuatro KPIs de pobreza y canastas: dos por fila en pantallas medianas, cuatro en las anchas. */
+@media (min-width: 760px) {
+  #indicadores-pobreza {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  #indicadores-pobreza {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Lista de hogares tipo debajo de la tabla de canastas. */
+.lista-hogares {
+  margin-top: 12px;
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+}
+
+/* La etiqueta de precisión debajo de cada KPI. */
+.kpi .precision {
+  margin: 10px 0 0;
+}
+
+/* Las pestañas separadas de los KPIs y del contenido. */
+.pestanas {
+  margin: 8px 0 4px;
+}
+
+/* Panel a lo ancho, con aire debajo (fuera de una .grilla). */
+.panel--espacio {
+  margin-bottom: 16px;
+}
+
+/* El aviso dentro de una pestaña, alineado con los paneles. */
+.panel-pestana > .aviso {
+  margin-bottom: 16px;
+}
+
+/* Listas de la pestaña de metodología. */
+.lista-precision,
+.lista-metodo {
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.9rem;
+}
+
+.lista-precision li {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.lista-precision .estado {
+  min-width: 118px;
+}
+
+/* La tabla de indicadores: los nombres largos pueden partirse en pantallas chicas. */
+#tabla-indicadores td:first-child {
+  white-space: normal;
+  min-width: 200px;
+}

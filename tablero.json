@@ -1,0 +1,38 @@
+{
+  "identificador": "eph-rio-cuarto",
+  "titulo": "Mercado de trabajo e ingresos en Río Cuarto (EPH)",
+  "descripcion": "Evolución trimestral del empleo, la desocupación, la informalidad, los ingresos y la desigualdad en el aglomerado Río Cuarto, comparada con el total de 31 aglomerados urbanos, a partir de la Encuesta Permanente de Hogares del INDEC.",
+  "fecha_creacion": "2026-11-03",
+  "tematica": "Trabajo e ingresos",
+  "autoria": ["Dir. de Estadística, Control de Calidad y Procesos — Sec. Gestión y Participación Ciudadana"],
+  "contacto": "[completar: correo institucional de contacto]",
+  "datasets": [
+    {
+      "nombre": "Indicadores de la EPH para el aglomerado Río Cuarto y el total de 31 aglomerados",
+      "fuente": "INDEC, Encuesta Permanente de Hogares, bases usuarias trimestrales (procesamiento propio)",
+      "periodo": "2.º trimestre 2016 – 1.er trimestre 2026",
+      "actualizacion": "trimestral"
+    },
+    {
+      "nombre": "Pobreza e indigencia en hogares y personas, Río Cuarto y total 31 aglomerados",
+      "fuente": "INDEC, informe semestral de incidencia de la pobreza y la indigencia (cuadros 4.1 a 4.4)",
+      "periodo": "2.º semestre 2016 – 1.er semestre 2026",
+      "actualizacion": "semestral"
+    },
+    {
+      "nombre": "Canasta básica alimentaria y canasta básica total (GBA y regiones)",
+      "fuente": "INDEC, serie mensual de canastas básicas y anexo regional del informe de pobreza",
+      "periodo": "abril 2016 – septiembre 2026 (regiones: desde enero 2026)",
+      "actualizacion": "mensual"
+    },
+    {
+      "nombre": "Empleo formal e informal, total 31 aglomerados",
+      "fuente": "Catálogo API-INDEC (api.indec.gob.ar)",
+      "periodo": "2016 – 2026",
+      "actualizacion": "trimestral"
+    }
+  ],
+  "sensibilidad": "bajo",
+  "ods": [1, 5, 8, 10],
+  "modo_datos": "estatico"
+}

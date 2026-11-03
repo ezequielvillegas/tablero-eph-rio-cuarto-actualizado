@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="assets/img/favicon.png">
+
+  <title>Mercado de trabajo e ingresos en Río Cuarto (EPH) — Gobierno de Río Cuarto</title>
+  <meta name="description" content="Evolución trimestral del empleo, la desocupación, la informalidad, los ingresos y la desigualdad en el aglomerado Río Cuarto, a partir de la Encuesta Permanente de Hogares del INDEC.">
+  <meta name="author" content="Dir. de Estadística, Control de Calidad y Procesos — Gobierno de Río Cuarto">
+  <meta name="dcterms.modified" content="2026-03">
+  <meta name="ods" content="1, 5, 8, 10">
+  <meta property="og:title" content="Mercado de trabajo e ingresos en Río Cuarto (EPH)">
+  <meta property="og:description" content="Empleo, desocupación, informalidad, ingresos y desigualdad en Río Cuarto, trimestre a trimestre, con datos de la EPH del INDEC.">
+
+  <!-- Aplica el tema guardado ANTES de pintar la página, para que no se vea
+       primero claro y después oscuro (o al revés) por un instante. No se toca. -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('tablero-tema');
+        if (t === 'claro' || t === 'oscuro') { document.documentElement.setAttribute('data-tema', t); }
+      } catch (e) {}
+    })();
+  </script>
+
+  <!-- El design system compartido. No hace falta tocar estas líneas. -->
+  <link rel="stylesheet" href="css/fuentes.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/iconos.css">
+
+  <!-- Los estilos propios de ESTE tablero. Va último para poder ajustar
+       lo de arriba. Es el archivo donde escribís tu CSS. -->
+  <link rel="stylesheet" href="css/tablero.css">
+</head>
+<body>
+
+  <a class="saltar-contenido" href="#contenido">Saltar al contenido</a>
+
+  <!-- ================= HEADER (igual en todos los tableros) ================ -->
+  <header class="encabezado">
+    <div class="contenedor">
+      <img class="logo" src="assets/img/logo-gobierno.webp" alt="Gobierno de Río Cuarto">
+      <span class="separador" aria-hidden="true"></span>
+      <div class="titulos">
+        <h1>Sec. Gestión y Participación Ciudadana</h1>
+        <p>Dir. de Estadística, Control de Calidad y Procesos</p>
+      </div>
+
+      <!-- Interruptor de modo claro/oscuro. Igual en todos los tableros: no se toca. -->
+      <button type="button" class="boton-tema" id="boton-tema" aria-label="Cambiar entre modo claro y oscuro">
+        <svg class="icono-luna" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>
+        </svg>
+        <svg class="icono-sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================= CONTENIDO ================================== -->
+  <main id="contenido">
+    <div class="contenedor">
+
+      <section class="intro">
+        <h2>Mercado de trabajo e ingresos en Río Cuarto</h2>
+        <p class="bajada">Empleo, desocupación, informalidad, ingresos y desigualdad en el aglomerado Río Cuarto, trimestre a trimestre, comparados con el total de los 31 aglomerados urbanos que releva la Encuesta Permanente de Hogares (EPH) del INDEC.</p>
+        <p class="actualizado"><span class="icono" aria-hidden="true">update</span> <span id="texto-actualizado">Datos al 1.er trimestre de 2026.</span></p>
+      </section>
+
+      <div class="aviso aviso--info">
+        <span class="icono" aria-hidden="true">info</span>
+        <p><strong>Cómo leer estas cifras</strong>
+          La EPH encuesta en Río Cuarto a unas 1.200 personas por trimestre. Con esa muestra, algunas tasas varían bastante de un trimestre a otro por azar, no por un cambio real. Cada indicador muestra su <em>precisión</em>, y con el selector de serie podés ver el promedio de los últimos 4 trimestres, que suaviza esas oscilaciones.</p>
+      </div>
+
+      <div class="filtros" role="group" aria-label="Filtros del tablero">
+        <div class="filtro">
+          <label for="filtro-periodo">Trimestre</label>
+          <select id="filtro-periodo"></select>
+        </div>
+        <div class="filtro">
+          <label for="filtro-serie">Serie de los gráficos de evolución</label>
+          <select id="filtro-serie">
+            <option value="trimestral">Trimestral</option>
+            <option value="movil">Promedio de los últimos 4 trimestres</option>
+          </select>
+        </div>
+      </div>
+
+      <h3 class="titulo-m titulo-seccion" id="titulo-kpis">Río Cuarto en el trimestre</h3>
+      <section class="indicadores" id="indicadores" aria-labelledby="titulo-kpis"></section>
+
+      <h3 class="titulo-m titulo-seccion" id="titulo-kpis-pobreza">Pobreza y canastas · último dato publicado</h3>
+      <section class="indicadores" id="indicadores-pobreza" aria-labelledby="titulo-kpis-pobreza"></section>
+
+      <div class="pestanas" role="tablist" aria-label="Secciones del tablero">
+        <button type="button" class="pestana" role="tab" id="tab-trabajo" aria-controls="panel-trabajo" aria-selected="true">Trabajo</button>
+        <button type="button" class="pestana" role="tab" id="tab-pobreza" aria-controls="panel-pobreza" aria-selected="false" tabindex="-1">Pobreza y canastas</button>
+        <button type="button" class="pestana" role="tab" id="tab-informalidad" aria-controls="panel-informalidad" aria-selected="false" tabindex="-1">Informalidad</button>
+        <button type="button" class="pestana" role="tab" id="tab-ingresos" aria-controls="panel-ingresos" aria-selected="false" tabindex="-1">Ingresos</button>
+        <button type="button" class="pestana" role="tab" id="tab-educacion" aria-controls="panel-educacion" aria-selected="false" tabindex="-1">Educación</button>
+        <button type="button" class="pestana" role="tab" id="tab-contexto" aria-controls="panel-contexto" aria-selected="false" tabindex="-1">Contexto nacional</button>
+        <button type="button" class="pestana" role="tab" id="tab-datos" aria-controls="panel-datos" aria-selected="false" tabindex="-1">Datos y método</button>
+      </div>
+
+      <!-- Trabajo -->
+      <section class="panel-pestana" role="tabpanel" id="panel-trabajo" aria-labelledby="tab-trabajo">
+        <div class="panel panel--espacio">
+          <h3>Tasa de desocupación</h3>
+          <p class="nota">Desocupados como porcentaje de la población económicamente activa.</p>
+          <div class="grafico grafico--alto" id="g-desocupacion" role="img" aria-label="Evolución de la tasa de desocupación en Río Cuarto y en el total de 31 aglomerados"></div>
+        </div>
+        <div class="grilla">
+          <div class="panel">
+            <h3>Tasa de actividad</h3>
+            <p class="nota">Población económicamente activa como porcentaje de la población total.</p>
+            <div class="grafico" id="g-actividad" role="img" aria-label="Evolución de la tasa de actividad en Río Cuarto y en el total de 31 aglomerados"></div>
+          </div>
+          <div class="panel">
+            <h3>Tasa de empleo</h3>
+            <p class="nota">Ocupados como porcentaje de la población total.</p>
+            <div class="grafico" id="g-empleo" role="img" aria-label="Evolución de la tasa de empleo en Río Cuarto y en el total de 31 aglomerados"></div>
+          </div>
+        </div>
+        <div class="grilla">
+          <div class="panel">
+            <h3>Por sexo, en el trimestre elegido</h3>
+            <p class="nota">Río Cuarto. Tasas en porcentaje.</p>
+            <div class="grafico" id="g-sexo" role="img" aria-label="Tasas de actividad, empleo y desocupación de varones y mujeres en Río Cuarto"></div>
+          </div>
+          <div class="panel">
+            <h3>Por grupo de edad, en el trimestre elegido</h3>
+            <p class="nota">Río Cuarto. Tasas en porcentaje de cada grupo de edad.</p>
+            <div class="grafico" id="g-edad" role="img" aria-label="Tasas de actividad y empleo por grupo de edad en Río Cuarto"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pobreza y canastas -->
+      <section class="panel-pestana" role="tabpanel" id="panel-pobreza" aria-labelledby="tab-pobreza" hidden>
+        <div class="aviso aviso--info">
+          <span class="icono" aria-hidden="true">info</span>
+          <p><strong>Cifras oficiales del INDEC, por semestre</strong>
+            La pobreza y la indigencia de Río Cuarto son las que publica el INDEC en su informe semestral, no un cálculo propio. Una persona es pobre si el ingreso de su hogar no alcanza para pagar la canasta básica total, e indigente si no alcanza para la canasta básica alimentaria.</p>
+        </div>
+        <div class="grilla">
+          <div class="panel">
+            <h3>Personas bajo la línea de pobreza</h3>
+            <p class="nota">Porcentaje de personas. Por semestre.</p>
+            <div class="grafico" id="g-pobreza-personas" role="img" aria-label="Evolución semestral del porcentaje de personas bajo la línea de pobreza en Río Cuarto y en el total de 31 aglomerados"></div>
+          </div>
+          <div class="panel">
+            <h3>Personas bajo la línea de indigencia</h3>
+            <p class="nota">Porcentaje de personas. Por semestre.</p>
+            <div class="grafico" id="g-indigencia-personas" role="img" aria-label="Evolución semestral del porcentaje de personas bajo la línea de indigencia en Río Cuarto y en el total de 31 aglomerados"></div>
+          </div>
+        </div>
+        <div class="grilla">
+          <div class="panel">
+            <h3>Hogares bajo la línea de pobreza</h3>
+            <p class="nota">Porcentaje de hogares. Por semestre.</p>
+            <div class="grafico" id="g-pobreza-hogares" role="img" aria-label="Evolución semestral del porcentaje de hogares bajo la línea de pobreza en Río Cuarto y en el total de 31 aglomerados"></div>
+          </div>
+          <div class="panel">
+            <h3>Hogares bajo la línea de indigencia</h3>
+            <p class="nota">Porcentaje de hogares. Por semestre.</p>
+            <div class="grafico" id="g-indigencia-hogares" role="img" aria-label="Evolución semestral del porcentaje de hogares bajo la línea de indigencia en Río Cuarto y en el total de 31 aglomerados"></div>
+          </div>
+        </div>
+        <div class="panel panel--espacio">
+          <h3>Canasta básica alimentaria y canasta básica total</h3>
+          <p class="nota">Valor mensual por adulto equivalente, Gran Buenos Aires (la serie completa que publica el INDEC). Pesos corrientes.</p>
+          <div class="grafico grafico--alto" id="g-canastas" role="img" aria-label="Evolución mensual del valor de la canasta básica alimentaria y de la canasta básica total por adulto equivalente en Gran Buenos Aires"></div>
+        </div>
+        <div class="panel panel--espacio">
+            <h3 id="titulo-canastas-regiones">Canasta básica total por región</h3>
+            <p class="nota" id="nota-canastas-regiones">Valor por adulto equivalente, último mes publicado por región. Río Cuarto pertenece a la región Pampeana.</p>
+            <div class="grafico" id="g-canastas-regiones" role="img" aria-label="Valor de la canasta básica total por adulto equivalente en cada región del país"></div>
+        </div>
+        <div class="panel panel--espacio">
+            <h3 id="titulo-tabla-canastas">Canastas de la región Pampeana</h3>
+            <p class="nota">Lo que necesita cada hogar para no ser pobre (CBT) o indigente (CBA), por mes. Pesos.</p>
+            <div class="tabla-scroll">
+              <table aria-labelledby="titulo-tabla-canastas">
+                <thead>
+                  <tr>
+                    <th scope="col">Mes</th>
+                    <th scope="col" class="numero">CBA por adulto</th>
+                    <th scope="col" class="numero">CBT por adulto</th>
+                    <th scope="col" class="numero">CBT hogar 1</th>
+                    <th scope="col" class="numero">CBT hogar 2</th>
+                    <th scope="col" class="numero">CBT hogar 3</th>
+                  </tr>
+                </thead>
+                <tbody id="tabla-canastas"></tbody>
+              </table>
+            </div>
+            <ul class="lista-metodo lista-hogares">
+              <li><strong>Hogar 1:</strong> 3 integrantes: una mujer de 35 años, su hijo de 18 y su madre de 61.</li>
+              <li><strong>Hogar 2:</strong> 4 integrantes: un varón de 35 años, una mujer de 31 y sus hijos de 6 y 8.</li>
+              <li><strong>Hogar 3:</strong> 5 integrantes: una pareja de 30 años y sus hijos de 5, 3 y 1.</li>
+            </ul>
+        </div>
+      </section>
+
+      <!-- Subocupación e informalidad -->
+      <section class="panel-pestana" role="tabpanel" id="panel-informalidad" aria-labelledby="tab-informalidad" hidden>
+        <div class="grilla">
+          <div class="panel">
+            <h3>Tasa de subocupación</h3>
+            <p class="nota">Ocupados que trabajan menos de 35 horas semanales y quieren trabajar más, como porcentaje de la población activa. En Río Cuarto oscila mucho: leer con precaución.</p>
+            <div class="grafico" id="g-subocupacion" role="img" aria-label="Evolución de la tasa de subocupación en Río Cuarto y en el total de 31 aglomerados"></div>
+          </div>
+          <div class="panel">
+            <h3>Ocupados que buscan otro empleo</h3>
+            <p class="nota">Ocupados demandantes de empleo, como porcentaje de la población activa.</p>
+            <div class="grafico" id="g-demandantes" role="img" aria-label="Evolución de la tasa de ocupados demandantes de empleo en Río Cuarto y en el total de 31 aglomerados"></div>
+          </div>
+        </div>
+        <div class="grilla">
+          <div class="panel">
+            <h3>Asalariados sin descuento jubilatorio</h3>
+            <p class="nota">Porcentaje de los asalariados a quienes no les hacen aportes jubilatorios: la medida clásica de informalidad laboral.</p>
+            <div class="grafico" id="g-informalidad" role="img" aria-label="Evolución del porcentaje de asalariados sin descuento jubilatorio en Río Cuarto y en el total de 31 aglomerados"></div>
+          </div>
+          <div class="panel">
+            <h3>Informalidad por sexo, en el trimestre elegido</h3>
+            <p class="nota">Asalariados sin descuento jubilatorio, en porcentaje.</p>
+            <div class="grafico" id="g-informalidad-sexo" role="img" aria-label="Porcentaje de asalariados sin descuento jubilatorio de varones y mujeres, en Río Cuarto y en el total de 31 aglomerados"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Ingresos y desigualdad -->
+      <section class="panel-pestana" role="tabpanel" id="panel-ingresos" aria-labelledby="tab-ingresos" hidden>
+        <div class="aviso aviso--alerta">
+          <span class="icono" aria-hidden="true">warning</span>
+          <p><strong>Montos en pesos corrientes</strong>
+            Los ingresos no están ajustados por inflación, así que su suba en el tiempo refleja sobre todo el aumento de precios. Para comparar Río Cuarto con el resto del país, mirá el gráfico del ingreso relativo, que no depende de la inflación.</p>
+        </div>
+        <div class="grilla">
+          <div class="panel">
+            <h3>Ingreso per cápita familiar mediano</h3>
+            <p class="nota">La mitad de las personas vive en hogares con un ingreso por integrante menor a este valor. Pesos corrientes.</p>
+            <div class="grafico" id="g-ipcf" role="img" aria-label="Evolución del ingreso per cápita familiar mediano en Río Cuarto y en el total de 31 aglomerados, en pesos corrientes"></div>
+          </div>
+          <div class="panel">
+            <h3>Ingreso de Río Cuarto frente al total del país urbano</h3>
+            <p class="nota">Ingreso per cápita familiar mediano de Río Cuarto, con el total de 31 aglomerados igual a 100.</p>
+            <div class="grafico" id="g-ipcf-relativo" role="img" aria-label="Evolución del ingreso mediano de Río Cuarto como índice, con el total de 31 aglomerados igual a 100"></div>
+          </div>
+        </div>
+        <div class="grilla">
+          <div class="panel">
+            <h3>Desigualdad: coeficiente de Gini</h3>
+            <p class="nota">Del ingreso per cápita familiar. Va de 0 (todos tienen lo mismo) a 1 (una persona tiene todo).</p>
+            <div class="grafico" id="g-gini" role="img" aria-label="Evolución del coeficiente de Gini en Río Cuarto y en el total de 31 aglomerados"></div>
+          </div>
+          <div class="panel">
+            <h3>Brecha de ingresos entre mujeres y varones</h3>
+            <p class="nota">Cuánto menos cobran en promedio las mujeres ocupadas que los varones en su ocupación principal, en porcentaje.</p>
+            <div class="grafico" id="g-brecha" role="img" aria-label="Evolución de la brecha de ingresos de la ocupación principal entre mujeres y varones en Río Cuarto y en el total de 31 aglomerados"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Educación -->
+      <section class="panel-pestana" role="tabpanel" id="panel-educacion" aria-labelledby="tab-educacion" hidden>
+        <div class="grilla">
+          <div class="panel">
+            <h3>Secundario completo o más</h3>
+            <p class="nota">Porcentaje de la población de 25 años y más que terminó al menos el nivel secundario.</p>
+            <div class="grafico" id="g-secundario" role="img" aria-label="Evolución del porcentaje de población de 25 años y más con secundario completo o más, en Río Cuarto y en el total de 31 aglomerados"></div>
+          </div>
+          <div class="panel">
+            <h3>Superior o universitario completo</h3>
+            <p class="nota">Porcentaje de la población de 25 años y más con estudios superiores o universitarios completos.</p>
+            <div class="grafico" id="g-superior" role="img" aria-label="Evolución del porcentaje de población de 25 años y más con nivel superior completo, en Río Cuarto y en el total de 31 aglomerados"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contexto nacional -->
+      <section class="panel-pestana" role="tabpanel" id="panel-contexto" aria-labelledby="tab-contexto" hidden>
+        <div class="aviso aviso--info">
+          <span class="icono" aria-hidden="true">info</span>
+          <p><strong>Datos oficiales para el total de 31 aglomerados</strong>
+            Esta serie viene directamente del Catálogo API-INDEC, que no la publica por aglomerado. Por eso se muestra como contexto del país urbano.</p>
+        </div>
+        <div class="panel panel--espacio">
+          <h3>Empleo formal e informal</h3>
+          <p class="nota">Tasas de empleo formal e informal sobre la población total, según la metodología vigente del INDEC. Total 31 aglomerados.</p>
+          <div class="grafico" id="g-formalidad" role="img" aria-label="Evolución de las tasas de empleo formal e informal, total de 31 aglomerados"></div>
+        </div>
+      </section>
+
+      <!-- Datos y metodología -->
+      <section class="panel-pestana" role="tabpanel" id="panel-datos" aria-labelledby="tab-datos" hidden>
+        <div class="panel panel--espacio">
+          <h3 id="titulo-tabla">Todos los indicadores del trimestre</h3>
+          <p class="nota">Valores del trimestre elegido en el filtro de arriba. La precisión se calcula sobre la muestra de Río Cuarto.</p>
+          <div class="tabla-scroll">
+            <table aria-labelledby="titulo-tabla">
+              <thead>
+                <tr>
+                  <th scope="col">Indicador</th>
+                  <th scope="col" class="numero">Río Cuarto</th>
+                  <th scope="col" class="numero">Total 31 aglom.</th>
+                  <th scope="col" class="numero">Casos en la muestra</th>
+                  <th scope="col">Precisión</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-indicadores"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="grilla">
+          <div class="panel">
+            <h3>Precisión de las estimaciones</h3>
+            <p class="nota">Según el coeficiente de variación (CV) aproximado de cada valor.</p>
+            <ul class="lista-precision">
+              <li><span class="estado estado--ok">Buena</span> CV de hasta 16%: el valor es confiable.</li>
+              <li><span class="estado estado--alerta">Con precaución</span> CV entre 16% y 33%: sirve como referencia, sus cambios chicos no son significativos.</li>
+              <li><span class="estado estado--grave">Poco confiable</span> CV mayor a 33%: solo orientativo.</li>
+              <li><span class="estado estado--neutro">Sin estimar</span> medianas y Gini, para los que no se calcula el CV.</li>
+            </ul>
+            <p class="nota">El CV es una aproximación (tamaño efectivo de muestra con un efecto de diseño de 1,5) y no reemplaza los errores muestrales oficiales del INDEC. No se publican valores calculados con menos de 30 casos.</p>
+          </div>
+          <div class="panel">
+            <h3>Fuentes y método</h3>
+            <p class="nota">Cómo se construyó cada número.</p>
+            <ul class="lista-metodo">
+              <li><strong>Río Cuarto:</strong> procesamiento propio de las bases usuarias trimestrales de la EPH (INDEC), filtradas en el aglomerado Río Cuarto (código 36), con los ponderadores oficiales.</li>
+              <li><strong>Validación:</strong> con el mismo procedimiento se calculó el total de 31 aglomerados y se comparó con las cifras oficiales del Catálogo API-INDEC en 40 trimestres: coinciden con diferencias menores a 0,1 punto, que se deben al redondeo. La media y la mediana del ingreso per cápita familiar también coinciden con las publicadas por el INDEC.</li>
+              <li><strong>Pobreza e indigencia:</strong> cifras oficiales del informe semestral del INDEC, por aglomerado (cuadros 4.1 a 4.4). La precisión del último semestre usa el coeficiente de variación oficial.</li>
+              <li><strong>Canastas:</strong> serie mensual de la canasta básica alimentaria y total del INDEC (Gran Buenos Aires) y valores por región del anexo de cada informe de pobreza. El valor de cada hogar tipo es la canasta por adulto multiplicada por sus unidades de adulto equivalente.</li>
+              <li><strong>Contexto nacional:</strong> empleo formal e informal, tomado del Catálogo API-INDEC (api.indec.gob.ar).</li>
+              <li><strong>Desde 2016:</strong> la serie empieza en el 2.º trimestre de 2016, cuando el INDEC retomó la publicación regular de la EPH.</li>
+              <li><strong>2020:</strong> por la pandemia, la encuesta se hizo por teléfono y con muestras más chicas.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ================= FOOTER (igual en todos los tableros) ================ -->
+  <footer class="pie">
+    <div class="contenedor">
+
+      <div class="pie-fila pie-fila--superior">
+        <div class="pie-escudos">
+          <img src="assets/img/escudo-secretaria.png" alt="Río Cuarto Gobierno — Secretaría de Gestión y Participación Ciudadana">
+          <img src="assets/img/escudo-datos.png" alt="Datos Río Cuarto">
+        </div>
+        <div class="pie-acciones">
+          <button type="button" class="boton boton--secundario boton--pildora" data-abrir="modal-ia">
+            <span class="icono" aria-hidden="true">auto_awesome</span>
+            Río Cuarto IA
+          </button>
+          <button type="button" class="boton boton--secundario boton--pildora" data-abrir="modal-ods">
+            <img src="assets/img/ods/ods-rueda.png" alt="" width="20" height="20">
+            Río Cuarto ODS
+          </button>
+        </div>
+      </div>
+
+      <div class="pie-fila pie-fila--inferior">
+        <div class="pie-textos">
+          <p><strong>Elaboración:</strong> Sec. Gestión y Participación Ciudadana · Dir. de Estadística, Control de Calidad y Procesos</p>
+          <p><strong>Fuente:</strong> INDEC, Encuesta Permanente de Hogares: bases usuarias trimestrales (aglomerado Río Cuarto, procesamiento propio), informes de pobreza e indigencia y de canastas básicas, y Catálogo API-INDEC (api.indec.gob.ar).</p>
+        </div>
+        <nav class="enlaces-paginas" aria-label="Páginas del tablero">
+          <a href="guia-diseno.html">Sistema de diseño</a>
+        </nav>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- Modal: cómo se construyó el tablero con IA. -->
+  <dialog class="modal" id="modal-ia" aria-labelledby="modal-ia-titulo">
+    <div class="modal-cuerpo">
+      <header class="modal-cabecera">
+        <h2 id="modal-ia-titulo"><span class="icono" aria-hidden="true">auto_awesome</span> Río Cuarto IA</h2>
+        <form method="dialog"><button class="modal-cerrar" aria-label="Cerrar"><span class="icono" aria-hidden="true">close</span></button></form>
+      </header>
+      <h3 class="titulo-m">Declaración de uso de Inteligencia Artificial</h3>
+      <p>El desarrollo del presente trabajo contó con el apoyo de herramientas de inteligencia artificial generativa (GenAI) —proveedor: Anthropic; herramienta: Claude; lenguajes de programación: Python, HTML, CSS y JavaScript; modelo: Claude Opus 5.5— para asistir en el diseño del proceso de extracción de los microdatos de la EPH y del Catálogo API-INDEC, el cálculo de los indicadores y de su precisión, la validación contra las cifras oficiales, y la construcción de los gráficos y de la estructura del tablero. El equipo técnico de la Dirección de Estadística, Control de Calidad y Procesos estuvo a cargo de la definición de los contenidos, la ejecución del procesamiento, la carga y publicación de los datos y la validación final de los contenidos e indicadores.</p>
+      <p>Los contenidos generados o asistidos por la herramienta fueron revisados, verificados y, cuando correspondió, modificados por los autores. Los autores asumen plena responsabilidad por el contenido final del trabajo.</p>
+    </div>
+  </dialog>
+
+  <!-- Modal: los ODS de este tablero. -->
+  <dialog class="modal" id="modal-ods" aria-labelledby="modal-ods-titulo">
+    <div class="modal-cuerpo">
+      <header class="modal-cabecera">
+        <h2 id="modal-ods-titulo"><img src="assets/img/ods/ods-rueda.png" alt="" width="28" height="28"> Río Cuarto ODS</h2>
+        <form method="dialog"><button class="modal-cerrar" aria-label="Cerrar"><span class="icono" aria-hidden="true">close</span></button></form>
+      </header>
+      <p>Este tablero contribuye al seguimiento de los siguientes Objetivos de Desarrollo Sostenible (ODS) de la Agenda 2030, en cumplimiento de la <a href="https://drive.google.com/file/d/1-JUX_knfakCrvlmDB0gHUXXLpbqkpIaY/view?usp=sharing" target="_blank" rel="noopener">Ordenanza N° 148/2021<span class="solo-lectores"> (se abre en una pestaña nueva)</span></a>:</p>
+      <ul class="ods-grilla">
+        <li><img src="assets/img/ods/ods-01.png" alt="ODS 1: Fin de la pobreza" width="240" height="240"></li>
+        <li><img src="assets/img/ods/ods-05.png" alt="ODS 5: Igualdad de género" width="240" height="240"></li>
+        <li><img src="assets/img/ods/ods-08.png" alt="ODS 8: Trabajo decente y crecimiento económico" width="240" height="240"></li>
+        <li><img src="assets/img/ods/ods-10.png" alt="ODS 10: Reducción de las desigualdades" width="240" height="240"></li>
+      </ul>
+    </div>
+  </dialog>
+
+  <!-- Gráficos (ECharts local), datos agregados, tema y lógica del tablero. -->
+  <script src="js/vendor/echarts.min.js"></script>
+  <script src="js/graficos.js"></script>
+  <script src="datos/eph-rio-cuarto.js"></script>
+  <script src="js/tema.js"></script>
+  <script src="js/pie.js"></script>
+  <script src="js/tablero.js"></script>
+</body>
+</html>
